@@ -7,6 +7,7 @@ import SmoothScrollProvider from "@/components/layout/SmoothScrollProvider";
 import CursorGlow from "@/components/ui/CursorGlow";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import AIAssistant from "@/components/ai/AIAssistant";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -42,6 +43,8 @@ export default function RootLayout({
           <Footer />
           <WhatsAppButton />
         </SmoothScrollProvider>
+
+        <AIAssistant />
       </body>
     </html>
   );
