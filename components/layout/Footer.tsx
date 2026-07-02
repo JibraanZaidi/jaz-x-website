@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Instagram, Linkedin, Twitter, Youtube, ArrowRight } from "lucide-react";
+import { Instagram, Linkedin, Twitter, Youtube, ArrowRight, Facebook } from "lucide-react";
 
 const SERVICES = [
   { label: "AI Development", href: "/services" },
@@ -69,11 +69,11 @@ export default function Footer() {
             </a>
 
             <a
-              href="#"
-              aria-label="YouTube"
+              href="https://facebook.com/JAZXInnovation"
+              aria-label="Facebook"
               className="hover:text-secondary transition-colors"
             >
-              <Youtube size={17} />
+              <Facebook size={17} />
             </a>
           </div>
         </div>
