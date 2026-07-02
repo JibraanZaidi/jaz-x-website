@@ -1,64 +1,71 @@
 "use client";
 
-import Image from "next/image";
-import { motion } from "framer-motion";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import AIChat from "./AIChat";
 
 export default function AIAssistant() {
-  const [open, setOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
-      <AIChat open={open} onClose={() => setOpen(false)} />
-
-      {/* Speech Bubble */}
-
-      {!open && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="fixed bottom-48 right-10 z-[9998]"
-        >
-          <div className="rounded-2xl border border-cyan-500/20 bg-[#0B0F19]/95 backdrop-blur-xl px-4 py-3 shadow-[0_0_30px_rgba(0,229,255,.18)]">
-            <p className="text-white text-sm font-medium">
-              👋 Hi! I'm JAZ-X AI
-            </p>
-
-            <p className="text-cyan-400 text-xs mt-1">
-              Need a website or AI solution?
-            </p>
+    <div className="fixed bottom-24 right-5 z-50 flex flex-col items-end sm:bottom-28 sm:right-8">
+      <AnimatePresence>
+        {isOpen && (
+          <div className="mb-4">
+            <AIChat onClose={() => setIsOpen(false)} />
           </div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
 
-      {/* Robot */}
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.button
+            type="button"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open JAZ-X AI Assistant"
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: [0, -10, 0],
+              rotate: [0, -4, 4, 0],
+            }}
+            exit={{ opacity: 0, scale: 0.6 }}
+            whileHover={{ scale: 1.12 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{
+              opacity: { duration: 0.3 },
+              scale: { duration: 0.3 },
+              y: {
+                duration: 3.2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+              rotate: {
+                duration: 4.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+            }}
+            className="relative h-16 w-16 rounded-full"
+          >
+            <span className="absolute inset-0 -z-10 rounded-full bg-[#00E5FF]/40 blur-xl" />
+            <span className="absolute inset-0 -z-10 animate-pulse rounded-full bg-[#00E5FF]/20 blur-2xl" />
 
-      <motion.button
-        onClick={() => setOpen(true)}
-        animate={{
-          y: [0, -12, 0],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        whileHover={{
-          scale: 1.08,
-        }}
-        className="fixed bottom-28 right-6 z-[9999]"
-      >
-        <Image
-          src="/images/jazx-ai.webp"
-          alt="JAZ-X AI"
-          width={120}
-          height={120}
-          priority
-          className="drop-shadow-[0_0_35px_rgba(0,229,255,.55)]"
-        />
-      </motion.button>
-    </>
+            <span className="relative block h-full w-full overflow-hidden rounded-full ring-2 ring-[#00E5FF]/60 shadow-[0_0_25px_-3px_rgba(0,229,255,0.8)]">
+              <Image
+                src="/images/jazx-ai.webp"
+                alt="JAZ-X AI Assistant"
+                fill
+                sizes="64px"
+                className="object-cover"
+                priority
+              />
+            </span>
+          </motion.button>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }
