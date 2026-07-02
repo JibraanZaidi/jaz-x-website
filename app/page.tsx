@@ -153,8 +153,8 @@ export default function HomePage() {
       <section className="relative py-24">
         <Reveal>
           <div className="px-6 md:px-16 max-w-7xl mx-auto mb-12">
-            <span className="text-xs text-secondary tracking-widest uppercase font-medium">Client Words</span>
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-3">Trusted by teams that ship.</h2>
+            <span className="text-xs text-secondary tracking-widest uppercase font-medium">OUR PROCESS</span>
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-tight mt-3">How We Turn Ideas Into Reality.</h2>
           </div>
         </Reveal>
         <TestimonialMarquee />
