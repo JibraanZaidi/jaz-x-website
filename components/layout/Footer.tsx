@@ -145,7 +145,7 @@ export default function Footer() {
           </form>
 
           <div className="mt-6 text-sm text-white/40 space-y-1">
-            <p>jibraanali@gmail.com</p>
+            <p>support@jazx.online</p>
             <p>+92 326 4380397</p>
           </div>
         </div>
