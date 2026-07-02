@@ -48,7 +48,7 @@ export default function AIAssistant() {
         whileHover={{
           scale: 1.08,
         }}
-        className="fixed bottom-8 right-6 z-[9999]"
+        className="fixed bottom-28 right-6 z-[9999]"
       >
         <Image
           src="/images/jazx-ai.webp"
