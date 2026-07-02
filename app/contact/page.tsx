@@ -8,7 +8,7 @@ import FloatingShape from "@/components/three/FloatingShape";
 
 const CONTACT_INFO = [
   { icon: Mail, label: "Email", value: "chat@jazx.online" },
-  { icon: Phone, label: "Phone", value: "+92 326 4380397" },
+  { icon: Phone, label: "Phone", value: "+92 336 6067612" },
   { icon: MessageCircle, label: "WhatsApp", value: "+92 326 4380397" },
   { icon: Clock, label: "Business Hours", value: "Mon–Fri, 10:00 AM – 8:00 PM PKT" },
   { icon: MapPin, label: "Location", value: "Pakistan  , Lahore" },
