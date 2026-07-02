@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
 import { useState } from "react";
-import AIOrb from "./AIOrb";
 import AIChat from "./AIChat";
 
 export default function AIAssistant() {
@@ -12,35 +12,53 @@ export default function AIAssistant() {
     <>
       <AIChat open={open} onClose={() => setOpen(false)} />
 
-      {/* Floating AI Orb */}
-      <motion.div
+      <motion.button
         onClick={() => setOpen(true)}
-        animate={{
-          y: [0, -12, 0],
-        }}
-        transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+        initial={{ opacity: 0, x: 40 }}
+        animate={{ opacity: 1, x: 0 }}
         whileHover={{
-          scale: 1.08,
+          scale: 1.05,
+          y: -3,
         }}
-        className="fixed bottom-28 right-8 w-24 h-24 cursor-pointer z-[9999]"
+        whileTap={{ scale: 0.97 }}
+        transition={{ duration: 0.35 }}
+        className="fixed bottom-6 left-6 z-[9999]
+        flex items-center gap-3
+        rounded-full
+        border border-cyan-500/20
+        bg-[#0B0F19]/90
+        backdrop-blur-xl
+        px-5 py-3
+        shadow-[0_0_40px_rgba(0,229,255,.18)]"
       >
-        <AIOrb />
-      </motion.div>
-
-      {!open && (
         <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 1 }}
-          className="fixed bottom-28 right-28 bg-black/80 backdrop-blur-xl border border-cyan-500/20 rounded-full px-4 py-2 text-xs text-white z-[9999]"
+          animate={{
+            rotate: [0, 10, -10, 0],
+            scale: [1, 1.08, 1],
+          }}
+          transition={{
+            repeat: Infinity,
+            duration: 3,
+          }}
+          className="w-11 h-11 rounded-full
+          bg-gradient-to-br
+          from-cyan-400
+          to-blue-600
+          flex items-center justify-center"
         >
-          ✨ Ask JAZ-X AI
+          <Sparkles size={20} color="white" />
         </motion.div>
-      )}
+
+        <div className="text-left">
+          <p className="text-white font-semibold text-sm">
+            JAZ-X AI
+          </p>
+
+          <p className="text-cyan-400 text-xs">
+            Ask anything
+          </p>
+        </div>
+      </motion.button>
     </>
   );
 }
