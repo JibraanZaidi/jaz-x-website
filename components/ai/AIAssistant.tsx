@@ -26,7 +26,7 @@ export default function AIAssistant() {
         whileHover={{
           scale: 1.08,
         }}
-        className="fixed bottom-8 right-8 w-24 h-24 cursor-pointer z-[9999]"
+        className="fixed bottom-28 right-8 w-24 h-24 cursor-pointer z-[9999]"
       >
         <AIOrb />
       </motion.div>
