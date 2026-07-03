@@ -8,6 +8,7 @@ import CursorGlow from "@/components/ui/CursorGlow";
 import LoadingScreen from "@/components/ui/LoadingScreen";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
 import AIAssistant from "@/components/ai/AIAssistant";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -45,6 +46,7 @@ export default function RootLayout({
         </SmoothScrollProvider>
 
         <AIAssistant />
+        <GoogleAnalytics gaId="G-LKPTT7NGRC" />
       </body>
     </html>
   );
