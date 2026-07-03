@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Phone, MessageCircle, Clock, MapPin, ArrowRight } from "lucide-react";
+import { Mail, Phone, MessageCircle, Clock, MapPin, ArrowRight, Loader2 } from "lucide-react";
 import MagneticButton from "@/components/ui/MagneticButton";
 import Reveal from "@/components/ui/Reveal";
 import FloatingShape from "@/components/three/FloatingShape";
@@ -24,12 +24,107 @@ const SERVICE_OPTIONS = [
   "Not sure yet",
 ];
 
-export default function ContactPage() {
-  const [submitted, setSubmitted] = useState(false);
+interface ContactFormState {
+  name: string;
+  email: string;
+  company: string;
+  service: string;
+  message: string;
+}
 
-  const handleSubmit = (e: React.FormEvent) => {
+type FieldErrors = Partial<Record<keyof ContactFormState, string>>;
+
+const INITIAL_FORM_STATE: ContactFormState = {
+  name: "",
+  email: "",
+  company: "",
+  service: SERVICE_OPTIONS[0],
+  message: "",
+};
+
+type SubmitStatus = "idle" | "loading" | "success" | "error";
+
+export default function ContactPage() {
+  const [formData, setFormData] = useState<ContactFormState>(INITIAL_FORM_STATE);
+  const [status, setStatus] = useState<SubmitStatus>("idle");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const submitted = status === "success";
+  const isLoading = status === "loading";
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Clear the field-level error as the user edits it
+    if (fieldErrors[name as keyof ContactFormState]) {
+      setFieldErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const validateClientSide = (): FieldErrors => {
+    const errors: FieldErrors = {};
+
+    if (!formData.name.trim() || formData.name.trim().length < 2) {
+      errors.name = "Please enter your full name.";
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!formData.email.trim() || !emailRegex.test(formData.email.trim())) {
+      errors.email = "Please enter a valid email address.";
+    }
+
+    if (!formData.service) {
+      errors.service = "Please select a service.";
+    }
+
+    if (!formData.message.trim() || formData.message.trim().length < 10) {
+      errors.message = "Please provide a few more details (at least 10 characters).";
+    }
+
+    return errors;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+
+    const clientErrors = validateClientSide();
+    if (Object.keys(clientErrors).length > 0) {
+      setFieldErrors(clientErrors);
+      return;
+    }
+
+    setStatus("loading");
+    setErrorMessage("");
+    setFieldErrors({});
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        if (data.errors) {
+          setFieldErrors(data.errors as FieldErrors);
+        }
+        setErrorMessage(data.message || "Something went wrong. Please try again.");
+        setStatus("error");
+        return;
+      }
+
+      setStatus("success");
+      setFormData(INITIAL_FORM_STATE);
+    } catch (err) {
+      console.error("Contact form submit error:", err);
+      setErrorMessage("Network error. Please check your connection and try again.");
+      setStatus("error");
+    }
   };
 
   return (
@@ -54,27 +149,48 @@ export default function ContactPage() {
               <p className="text-white/50">
                 Thanks for reaching out — we&apos;ll get back to you within one business day.
               </p>
+              <button
+                type="button"
+                onClick={() => setStatus("idle")}
+                className="mt-6 text-sm text-secondary hover:underline"
+              >
+                Send another message
+              </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} noValidate className="space-y-5">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                   <label className="text-xs text-white/40 mb-2 block">Full name</label>
                   <input
                     required
                     type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     placeholder="Your name"
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-secondary/50 transition-colors placeholder:text-white/25"
+                    disabled={isLoading}
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-secondary/50 transition-colors placeholder:text-white/25 disabled:opacity-50"
                   />
+                  {fieldErrors.name && (
+                    <p className="text-xs text-red-400 mt-1.5">{fieldErrors.name}</p>
+                  )}
                 </div>
                 <div>
                   <label className="text-xs text-white/40 mb-2 block">Email</label>
                   <input
                     required
                     type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     placeholder="your.email@company.com"
-                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-secondary/50 transition-colors placeholder:text-white/25"
+                    disabled={isLoading}
+                    className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-secondary/50 transition-colors placeholder:text-white/25 disabled:opacity-50"
                   />
+                  {fieldErrors.email && (
+                    <p className="text-xs text-red-400 mt-1.5">{fieldErrors.email}</p>
+                  )}
                 </div>
               </div>
 
@@ -82,20 +198,33 @@ export default function ContactPage() {
                 <label className="text-xs text-white/40 mb-2 block">Company</label>
                 <input
                   type="text"
+                  name="company"
+                  value={formData.company}
+                  onChange={handleChange}
                   placeholder="Company name"
-                  className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-secondary/50 transition-colors placeholder:text-white/25"
+                  disabled={isLoading}
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-secondary/50 transition-colors placeholder:text-white/25 disabled:opacity-50"
                 />
               </div>
 
               <div>
                 <label className="text-xs text-white/40 mb-2 block">What do you need?</label>
-                <select className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-secondary/50 transition-colors text-white/70">
+                <select
+                  name="service"
+                  value={formData.service}
+                  onChange={handleChange}
+                  disabled={isLoading}
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-secondary/50 transition-colors text-white/70 disabled:opacity-50"
+                >
                   {SERVICE_OPTIONS.map((opt) => (
                     <option key={opt} value={opt} className="bg-[#0a0a0a]">
                       {opt}
                     </option>
                   ))}
                 </select>
+                {fieldErrors.service && (
+                  <p className="text-xs text-red-400 mt-1.5">{fieldErrors.service}</p>
+                )}
               </div>
 
               <div>
@@ -103,13 +232,38 @@ export default function ContactPage() {
                 <textarea
                   required
                   rows={5}
+                  name="message"
+                  value={formData.message}
+                  onChange={handleChange}
                   placeholder="Tell us what you're building and what success looks like."
-                  className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-secondary/50 transition-colors placeholder:text-white/25 resize-none"
+                  disabled={isLoading}
+                  className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm outline-none focus:border-secondary/50 transition-colors placeholder:text-white/25 resize-none disabled:opacity-50"
                 />
+                {fieldErrors.message && (
+                  <p className="text-xs text-red-400 mt-1.5">{fieldErrors.message}</p>
+                )}
               </div>
 
-              <MagneticButton variant="primary" className="justify-center">
-                Send Message <ArrowRight size={16} />
+              {status === "error" && errorMessage && (
+                <div className="border border-red-400/20 bg-red-400/5 rounded-xl px-4 py-3">
+                  <p className="text-sm text-red-400">{errorMessage}</p>
+                </div>
+              )}
+
+              <MagneticButton
+                variant="primary"
+                className="justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 size={16} className="animate-spin" /> Sending...
+                  </>
+                ) : (
+                  <>
+                    Send Message <ArrowRight size={16} />
+                  </>
+                )}
               </MagneticButton>
             </form>
           )}
