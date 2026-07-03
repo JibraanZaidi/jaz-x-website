@@ -46,7 +46,7 @@ export default function RootLayout({
         </SmoothScrollProvider>
 
         <AIAssistant />
-        <GoogleAnalytics gaId="G-LKPTT7NGRC" />
+        <GoogleAnalytics gaId="G-QCJV6XYC3X" />
       </body>
     </html>
   );
