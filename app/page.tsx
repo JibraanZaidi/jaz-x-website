@@ -57,7 +57,7 @@ export default function HomePage() {
             systems for brands that refuse to look ordinary.
           </p>
           <div className="flex items-center gap-4 flex-wrap">
-            <MagneticButton href="/contact" variant="primary">
+            <MagneticButton href="/start-project" variant="primary">
               Start a Project <ArrowRight size={16} />
             </MagneticButton>
             <MagneticButton href="/portfolio" variant="secondary">View Our Work</MagneticButton>

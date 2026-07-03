@@ -62,7 +62,7 @@ export default function Navbar() {
 
       {/* CTA Button */}
       <div className="hidden md:block">
-        <MagneticButton href="/contact" variant="secondary">
+        <MagneticButton href="/start-project" variant="secondary">
           Start a Project <ArrowRight size={14} />
         </MagneticButton>
       </div>
