@@ -251,10 +251,12 @@ export default function ContactPage() {
               )}
 
               <MagneticButton
-                variant="primary"
-                className="justify-center disabled:opacity-60 disabled:cursor-not-allowed"
+                type="submit"
+               variant="primary"
+               className="justify-center w-full"
                 disabled={isLoading}
               >
+                
                 {isLoading ? (
                   <>
                     <Loader2 size={16} className="animate-spin" /> Sending...
